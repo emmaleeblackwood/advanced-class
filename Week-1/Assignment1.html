@@ -1,0 +1,141 @@
+<html>
+<head>
+  <title>STL Vegan Guide</title>
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.css"/>
+  <link rel="stylesheet" href="CSS/personalStylesheet.css"/>
+  <link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.3/leaflet.js"></script>
+    
+  <style>
+    #map{ width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+
+  <div id="map"></div>
+
+  <script>
+
+  // initialize the map
+  var map = L.map('map').setView([38.63, -90.24], 12);
+
+  // load a tile layer
+ var HERE_normalDay = L.tileLayer('https://{s}.{base}.maps.cit.api.here.com/maptile/2.1/{type}/{mapID}/normal.day/{z}/{x}/{y}/{size}/{format}?app_id={app_id}&app_code={app_code}&lg={language}', {
+	attribution: 'Map &copy; 1987-2014 <a href="http://developer.here.com">HERE</a>',
+	subdomains: '1234',
+	mapID: 'newest',
+	app_id: '<your app_id>',
+	app_code: '<your app_code>',
+	base: 'base',
+	maxZoom: 20,
+	type: 'maptile',
+	language: 'eng',
+	format: 'png8',
+	size: '256'
+});
+      
+  var Esri_WorldStreetMap = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+  attribution: 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+});
+  var CartoDB_Positron = L.tileLayer('https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="http://cartodb.com/attributions">CartoDB</a>',
+	subdomains: 'abcd',
+	maxZoom: 19
+});
+    var OpenStreetMap_BlackAndWhite = L.tileLayer('http://{s}.tiles.wmflabs.org/bw-mapnik/{z}/{x}/{y}.png', {
+	maxZoom: 18,
+	attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+});
+  OpenStreetMap_BlackAndWhite.addTo(map)
+      
+var veganIcon = L.icon({
+    iconUrl: "https://cdn.icon-icons.com/icons2/881/PNG/512/Vegan_Symbol_icon-icons.com_68673.png",
+    // shadowUrl: 'leaf-shadow.png',
+
+    iconSize:     [50, 50], // size of the icon
+   // shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+   // shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [3, -76] // point from which the popup should open relative to the iconAnchor
+});
+      
+var veggieIcon = L.icon({
+    iconUrl: "images/vegan2.png",
+    // shadowUrl: 'leaf-shadow.png',
+
+    iconSize:     [50, 50], // size of the icon
+   // shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+   // shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [3, -76] // point from which the popup should open relative to the iconAnchor
+});
+      
+var dessertIcon = L.icon({
+    iconUrl: "images/vegan3.png",
+    // shadowUrl: 'leaf-shadow.png',
+
+    iconSize:     [50, 50], // size of the icon
+   // shadowSize:   [50, 64], // size of the shadow
+    iconAnchor:   [22, 94], // point of the icon which will correspond to marker's location
+   // shadowAnchor: [4, 62],  // the same for the shadow
+    popupAnchor:  [3, -76] // point from which the popup should open relative to the iconAnchor
+});
+       
+var marker = L.marker([38.6001906, -90.2451338], {icon: veganIcon}).addTo(map);
+      marker.bindPopup("<div class='popupClass'><b>Tree House Restaurant</b><br><p>All menu items can be made vegan.  Delicious small plates, entrees, cocktails, and desserts.</p><a href='https://www.treehousestl.com/'>Website</a></div>").openPopup();
+      
+var marker2 = L.marker([38.5989954, -90.2452744], {icon: veganIcon}).addTo(map);
+      marker2.bindPopup("<div class='popupClass'><b>Lulu's Local Eatery</b><br><p>Full vegan menu. Tasty and reasonably priced. Check out the new ping-pong bar upstairs.</p><a href='https://www.luluslocaleatery.com/'>Website</a></div>").openPopup();
+
+var marker3 = L.marker([38.6373419, -90.3098975], {icon: veganIcon}).addTo(map);
+      marker3.bindPopup("<div class='popupClass'><b>Seedz Cafe</b><br><p>Top-notch vegan fare. Check out Seedz Provisions next door for a unique selection of healthy cafe drinks.  Mmm matcha!</p><a href='http://www.seedzcafe.com/'>Website</a></div>").openPopup();
+      
+var marker4 = L.marker([38.6482872, -90.2807001], {icon: veganIcon}).addTo(map);
+      marker4.bindPopup("<div class='popupClass'><b>PuraVegan Cafe & Yoga</b><br><p>A happy place with a full vegan menu and focus on overall well-being.</p><a href='http://www.puravegan.com/'>Website</a></div>").openPopup();
+
+var marker5 = L.marker([38.6598509, -90.339404], {icon: veganIcon}).addTo(map);
+      marker5.bindPopup("<div class='popupClass'><b>Frida's</b><br><p>A mostly vegan menu with a wide variety of options.</p><a href='http://www.eatatfridas.com/'>Website</a></div>").openPopup();
+      
+var marker6 = L.marker([38.6116713, -90.2482287], {icon: veganIcon}).addTo(map);
+      marker6.bindPopup("<div class='popupClass'><b>SweetArt</b><br><p>A bakery with many vegan baked goods and a great lunch menu.</p><a href='http://sweetartstl.com/'>Website</a></div>").openPopup();
+      
+var marker8 = L.marker([38.6060382, -90.3758302], {icon: veganIcon}).addTo(map);
+      marker8.bindPopup("<div class='popupClass'><b>Juice Bar</b><br><p>Mostly vegan menu with great smoothies, smoothie bowls, and casual food options.</p><a href='https://ilovejuicebar.com/'>Website</a></div>").openPopup();
+      
+var marker9 = L.marker([38.6275127, -90.3395613], {icon: veggieIcon}).addTo(map);
+      marker9.bindPopup("<div class='popupClass'><b>Revel Kitchen</b><br><p>Good number of options for vegans.  Menu items are customizable.</p><a href='https://www.eatrevelkitchen.com/'>Website</a></div>").openPopup();
+      
+var marker10 = L.marker([38.6358971, -90.2240543], {icon: veggieIcon}).addTo(map);
+      marker10.bindPopup("<div class='popupClass'><b>Small Batch</b><br><p>Full vegetarian menu with vegan options. Nice dinner spot with an extensive whiskey and cocktail selection.</p><a href='http://smallbatchstl.com/'>Website</a></div>").openPopup();
+
+var marker11 = L.marker([38.6271572, -90.2597617], {icon: veggieIcon}).addTo(map);
+      marker11.bindPopup("<div class='popupClass'><b>Layla</b><br><p>Good veggie options. Try their Jane says burger made with lentils and beets!</p><a href='http://laylastl.com/'>Website</a></div>").openPopup();
+      
+var marker12 = L.marker([38.6102003, -90.2289412], {icon: veggieIcon}).addTo(map);
+      marker12.bindPopup("<div class='popupClass'><b>Lona's Lil Eats</b><br><p>Several vegan menu choices. Try their spicy tofu giant rice paper wrap.</p><a href='http://lonaslileats.com/'>Website</a></div>").openPopup();
+      
+var marker13 = L.marker([38.5932983, -90.2265287], {icon: veggieIcon}).addTo(map);
+      marker13.bindPopup("<div class='popupClass'><b>Kalbi Taco Shack</b><br><p>Tasty mexican/korean fusion with vegan options. Try their jackfruit in a dish with vegan aeoli.</p><a href='https://kalbitacoshack.com/'>Website</a></div>").openPopup();
+      
+var marker14 = L.marker([38.595115, -90.3036338], {icon: veggieIcon}).addTo(map);
+      marker14.bindPopup("<div class='popupClass'><b>Kounter Kulture</b><br><p>Very good asian fusion. Only a few vegan options, but they are so good that it's worth a visit.</p><a href='http://kounterkulturestl.com/'>Website</a></div>").openPopup();
+      
+var marker15 = L.marker([38.6103038, -90.2481056], {icon: dessertIcon}).addTo(map);
+      marker15.bindPopup("<div class='popupClass'><b>Ice's Plain & Fancy</b><br><p>Several vegan ice cream flavors made to order...german chocolate made with coconut milk is amazing.</p><a href='http://www.icesplainandfancy.com/'>Website</a></div>").openPopup();
+      
+var marker16 = L.marker([38.6140156, -90.2294855], {icon: dessertIcon}).addTo(map);
+      marker16.bindPopup("<div class='popupClass'><b>Clementine's Naughty & Nice Creamery</b><br><p>A couple of tasty dairy-free options.</p><a href='https://www.clementinescreamery.com/'>Website</a></div>").openPopup();
+      
+var marker18 = L.marker([38.593042, -90.2233802], {icon: dessertIcon}).addTo(map);
+      marker18.bindPopup("<div class='popupClass'><b>Whisk: A Sustainable Bakeshop</b><br><p>A bakeshop with lots of delectable vegan baked goods.</p><a href='http://whiskstl.com/'>Website</a></div>").openPopup();
+      
+var marker17 = L.marker([38.6019946, -90.2221188], {icon: dessertIcon}).addTo(map);
+      marker17.bindPopup("<div class='popupClass'><b>Cones + Cups</b><br><p>A great selection of coconut-based vegan ice creams.</p><a href='https://www.yelp.com/biz/cones-cups-st-louis'>Website</a></div>").openPopup();
+      
+  
+</script>
+    
+    
+    
+</body>
+</html> 

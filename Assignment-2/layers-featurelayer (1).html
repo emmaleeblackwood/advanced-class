@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
+  <title>Intro to FeatureLayer - 4.8</title>
+
+  <link rel="stylesheet" href="https://js.arcgis.com/4.8/esri/css/main.css">
+  <script src="https://js.arcgis.com/4.8/"></script>
+
+  <style>
+    html,
+    body,
+    #viewDiv {
+      padding: 0;
+      margin: 0;
+      height: 100%;
+      width: 100%;
+    }
+  </style>
+
+  <script>
+    require([
+        "esri/Map",
+        "esri/views/SceneView",
+
+        "esri/layers/FeatureLayer",
+
+        "dojo/domReady!"
+      ],
+      function(
+        Map, SceneView,
+        FeatureLayer
+      ) {
+
+        var map = new Map({
+          basemap: "hybrid"
+        });
+
+        var view = new SceneView({
+          container: "viewDiv",
+          map: map,
+
+          
+          zoom: 3
+        });
+        
+
+        /********************
+         * Add feature layer
+         ********************/
+
+        // Carbon storage of trees in Warren Wilson College.
+        var featureLayer_1 = new FeatureLayer({
+          url: "http://services.arcgis.com/BG6nSlhZSAWtExvp/arcgis/rest/services/World_Volcanoes/FeatureServer"
+        });
+
+        map.add(featureLayer_1);
+        
+        var featureLayer_2 = new FeatureLayer({
+ url: "https://edumaps.esri.ca/ArcGIS/rest/services/MapServices/TectonicPlates/MapServer"
+});
+
+map.add(featureLayer_2);
+
+      });
+  </script>
+</head>
+
+<body>
+  <div id="viewDiv"></div>
+</body>
+
+</html>
