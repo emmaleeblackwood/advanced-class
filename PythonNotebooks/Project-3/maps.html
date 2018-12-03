@@ -1,0 +1,359 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>Visualizing the Potential for Urban Agriculture in the Urban Praire of St. Louis</title>
+
+    <!-- Load Esri CSS from CDN -->
+    <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css" />
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa" rel="stylesheet">
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            font-family: 'Comfortaa', cursive !important;
+            text-align: center;
+        }
+
+        #viewDiv {
+            height: 87vh;
+            width: 98vw;
+            outline: 1px solid steelblue;
+            margin: 0 auto;
+        }
+
+        #chartContainer {
+            height: 30vh;
+            width: 30vw;
+            z-index: 9999;
+            display: block;
+            top: calc(5vh + 84px);
+            right: 2vw;
+            outline: 1px solid steelblue;
+            position: absolute;
+            padding: 0;
+        }
+
+        #viewDiv1 {
+            height: 91vh;
+            width: 98vw;
+            outline: 1px solid steelblue;
+            margin: 0 auto;
+        }
+
+        #viewDiv2 {
+            height: 91vh;
+            width: 98vw;
+            outline: 1px solid steelblue;
+            margin: 0 auto;
+        }
+
+        #viewDiv3 {
+            height: 91vh;
+            width: 98vw;
+            outline: 1px solid steelblue;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <h3>Visualizing the Potential for Urban Agriculture in the Urban Praire of St. Louis</h3>
+    <p>Vacant Lots and Food Desert Tracts</p>
+
+    <div id="viewDiv">
+        <div id="chartContainer"></div>
+    </div>
+
+    <p> Hot Spots for Vacant Lots Within Food Desert Tracts </p>
+
+    <div id="viewDiv1"></div>
+
+    <p> Total Population in Food Desert Tracts </p>
+
+    <div id="viewDiv2"></div>
+
+    <p> Vacant Lots near Public Schools </p>
+
+    <div id="viewDiv3"></div>
+
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://js.arcgis.com/4.9/"></script>
+    
+    <script>
+        require([
+            'esri/WebMap',
+            'esri/views/MapView',
+            'esri/layers/FeatureLayer',
+            'esri/widgets/Legend',
+        ], function (WebMap, MapView, FeatureLayer, Legend) {
+
+            var WebMap = new WebMap({
+                portalItem: {
+                    id: "eb7af41b2d614703ab95d0bd931ddddf"
+                }
+            });
+
+            var foodDesertFeatureLayer = new FeatureLayer({
+                url: 'https://services2.arcgis.com/bB9Y1bGKerz1PTl5/arcgis/rest/services/Join_Features_to_Food_Deserts_STL/FeatureServer',
+                outFields: ['Join_Count', 'OBJECTID']
+            });
+
+            WebMap.layers.add(foodDesertFeatureLayer);
+
+            var mapView = new MapView({
+                container: 'viewDiv',
+                map: WebMap,
+                zoom: 11,
+                center: [-90.25, 38.65] // [longitude, latitude]
+            });
+
+            mapView.when(function () {
+                // get the first layer in the collection of operational layers in the WebMap
+                // when the resources in the MapView have loaded.
+                var featureLayer = WebMap.layers.getItemAt(0);
+                var featureLayer2 = WebMap.layers.getItemAt(1);
+
+                var legend = new Legend({
+                    view: mapview,
+                    layerInfos: [{
+                        layer: featureLayer,
+                        title: "Food Desert Tracts"
+                    },
+                    {
+                        layer: featureLayer2,
+                        title: "Vacant Lots"
+                    }]
+                });
+
+                // Add widget to the bottom right corner of the view
+                mapView.ui.add(legend, "bottom-right");
+            });
+
+
+            var chartContainer = document.querySelector('#chartContainer');
+
+            var initialChartData = [
+                {
+                    type: 'bar',
+                    x: [],
+                    y: []
+                }
+            ];
+
+            var chartLayout = {
+                margin: {
+                    t: 40
+                },
+                title: 'Vacant Lot Count',
+                xaxis: {
+                    title: 'Desert Tract ID',
+                    titlefont: {
+                        family: 'Comfortaa, cursive',
+                        size: 14,
+                        color: '#7f7f7f'
+                    }
+                },
+                yaxis: {
+                    title: 'No. of Vacant Lots',
+                    titlefont: {
+                        family: 'Comfortaa, cursive',
+                        size: 14,
+                        color: '#7f7f7f'
+                    }
+                }
+
+            };
+
+            var chartConfig = {
+                responsive: true
+            };
+
+            Plotly.react(chartContainer, initialChartData, chartLayout, chartConfig);
+
+            // STEP 3: MAKE THE CHART DYNAMIC
+            mapView
+                .whenLayerView(foodDesertFeatureLayer)
+                .then(function (layerView) {
+                    mapView.watch('updating', function (updatingBoolean) {
+
+                        if (!updatingBoolean) {
+                            layerView
+                                .queryFeatures({
+                                    geometry: mapView.extent,
+                                    returnGeometry: false,
+                                    orderByFields: ['OBJECTID ASC']
+                                })
+                                .then(function (results) {
+
+                                    var foodDesertArray = [];
+                                    var totalVacantPerDesert = [];
+                                    results.features.forEach(function (feature) {
+                                        if (foodDesertArray.indexOf(feature.attributes.OBJECTID) === -1) {
+
+                                            foodDesertArray.push(feature.attributes.OBJECTID);
+                                            totalVacantPerDesert.push(0);
+                                        }
+                                        var categoryArrayIndex = foodDesertArray.indexOf(feature.attributes.OBJECTID);
+
+                                        totalVacantPerDesert[categoryArrayIndex] += feature.attributes.Join_Count;
+                                    });
+
+                                    var newChartData = [
+                                        {
+                                            type: 'bar',
+                                            x: foodDesertArray,
+                                            y: totalVacantPerDesert
+                                        }
+                                    ];
+
+                                    Plotly.react(chartContainer, newChartData, chartLayout, chartConfig);
+                                });
+                        }
+                    });
+                });
+        });
+    </script>
+    <script>
+        require([
+            "esri/views/MapView",
+            "esri/widgets/Legend",
+            "esri/WebMap"
+        ],
+            function (
+                MapView, Legend, WebMap
+            ) {
+
+                var webmap = new WebMap({
+                    portalItem: { // autocasts as new PortalItem()
+                        id: "26284d8e888e42919dded959e3089a9a"
+                    }
+                });
+
+                var view = new MapView({
+                    container: "viewDiv1",
+                    map: webmap,
+                    zoom: 11,
+                    center: [-90.25, 38.65] // [longitude, latitude]
+                });
+
+                view.when(function () {
+                    // get the first layer in the collection of operational layers in the WebMap
+                    // when the resources in the MapView have loaded.
+                    var featureLayer = webmap.layers.getItemAt(0);
+
+                    var legend = new Legend({
+                        view: view,
+                        layerInfos: [{
+                            layer: featureLayer,
+                            title: "Hot Spot Analysis"
+                        }]
+                    });
+
+                    // Add widget to the bottom right corner of the view
+                    view.ui.add(legend, "bottom-right");
+                });
+            });
+
+    </script>
+    <script>
+        require([
+            "esri/views/MapView",
+            "esri/widgets/Legend",
+            "esri/WebMap"
+        ],
+            function (
+                MapView, Legend, WebMap
+            ) {
+
+                var webmap = new WebMap({
+                    portalItem: { // autocasts as new PortalItem()
+                        id: "b866154a5fb04318b3d97fe30dde93bb"
+                    }
+                });
+
+                var view = new MapView({
+                    container: "viewDiv2",
+                    map: webmap,
+                    zoom: 11,
+                    center: [-90.25, 38.65] // [longitude, latitude]
+                });
+
+                view.when(function () {
+                    // get the first layer in the collection of operational layers in the WebMap
+                    // when the resources in the MapView have loaded.
+                    var featureLayer = webmap.layers.getItemAt(1);
+
+                    var legend = new Legend({
+                        view: view,
+                        layerInfos: [{
+                            layer: featureLayer,
+                            title: "Total Population Per Desert Tract"
+                        }]
+                    });
+
+                    // Add widget to the bottom right corner of the view
+                    view.ui.add(legend, "bottom-right");
+                });
+            });
+
+    </script>
+    <script>
+        require([
+            "esri/views/MapView",
+            "esri/widgets/Legend",
+            "esri/WebMap"
+        ],
+            function (
+                MapView, Legend, WebMap
+            ) {
+
+                var webmap = new WebMap({
+                    portalItem: { // autocasts as new PortalItem()
+                        id: "1c401f4d0b874af7aeea41ef61d25155"
+                    }
+                });
+
+                var view = new MapView({
+                    container: "viewDiv3",
+                    map: webmap,
+                    zoom: 11,
+                    center: [-90.25, 38.65] // [longitude, latitude]
+                });
+
+                view.when(function () {
+                    // get the first layer in the collection of operational layers in the WebMap
+                    // when the resources in the MapView have loaded.
+                    var featureLayer = webmap.layers.getItemAt(0);
+                    var featureLayer2 = webmap.layers.getItemAt(1);
+                    var featureLayer3 = webmap.layers.getItemAt(3);
+
+                    var legend = new Legend({
+                        view: view,
+                        layerInfos: [{
+                            layer: featureLayer,
+                            title: "Area Within 0.25 Miles of a Public School"
+                        }, {
+                            layer: featureLayer2,
+                            title: "Public Schools"
+                        }, {
+                            layer: featureLayer3,
+                            title: "Vacant Lots"
+                        },
+
+                        ]
+                    });
+
+                    // Add widget to the bottom right corner of the view
+                    view.ui.add(legend, "bottom-right");
+                });
+            });
+
+    </script>
+</body>
+</html>
