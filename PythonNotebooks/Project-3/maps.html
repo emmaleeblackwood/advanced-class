@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -74,11 +74,11 @@
 
     <div id="viewDiv1"></div>
 
-    <p> Total Population in Food Desert Tracts </p>
+    <p> Population Density in Food Desert Tracts </p>
 
     <div id="viewDiv2"></div>
 
-    <p> Vacant Lots near Public Schools </p>
+    <p> Vacant Lots Near Public Schools </p>
 
     <div id="viewDiv3"></div>
 
@@ -89,22 +89,15 @@
         require([
             'esri/WebMap',
             'esri/views/MapView',
-            'esri/layers/FeatureLayer',
             'esri/widgets/Legend',
-        ], function (WebMap, MapView, FeatureLayer, Legend) {
+            'esri/layers/FeatureLayer'
+        ], function (WebMap, MapView, Legend, FeatureLayer) {
 
             var WebMap = new WebMap({
                 portalItem: {
                     id: "eb7af41b2d614703ab95d0bd931ddddf"
                 }
             });
-
-            var foodDesertFeatureLayer = new FeatureLayer({
-                url: 'https://services2.arcgis.com/bB9Y1bGKerz1PTl5/arcgis/rest/services/Join_Features_to_Food_Deserts_STL/FeatureServer',
-                outFields: ['Join_Count', 'OBJECTID']
-            });
-
-            WebMap.layers.add(foodDesertFeatureLayer);
 
             var mapView = new MapView({
                 container: 'viewDiv',
@@ -117,10 +110,10 @@
                 // get the first layer in the collection of operational layers in the WebMap
                 // when the resources in the MapView have loaded.
                 var featureLayer = WebMap.layers.getItemAt(0);
-                var featureLayer2 = WebMap.layers.getItemAt(1);
-
+                var featureLayer2 = WebMap.layers.getItemAt(2);
+               
                 var legend = new Legend({
-                    view: mapview,
+                    view: mapView,
                     layerInfos: [{
                         layer: featureLayer,
                         title: "Food Desert Tracts"
@@ -131,11 +124,17 @@
                     }]
                 });
 
+                console.log(legend);
                 // Add widget to the bottom right corner of the view
                 mapView.ui.add(legend, "bottom-right");
             });
 
+            var foodDesertFeatureLayer = new FeatureLayer({
+                url: 'https://services2.arcgis.com/bB9Y1bGKerz1PTl5/arcgis/rest/services/Join_Features_to_Food_Deserts_STL/FeatureServer',
+                outFields: ['Join_Count', 'OBJECTID']
+            });
 
+            WebMap.layers.add(foodDesertFeatureLayer);
             var chartContainer = document.querySelector('#chartContainer');
 
             var initialChartData = [
@@ -208,7 +207,10 @@
                                         {
                                             type: 'bar',
                                             x: foodDesertArray,
-                                            y: totalVacantPerDesert
+                                            y: totalVacantPerDesert,
+                                            marker:{
+                                                color: '#FF6404'
+                                            }
                                         }
                                     ];
 
@@ -293,7 +295,7 @@
                         view: view,
                         layerInfos: [{
                             layer: featureLayer,
-                            title: "Total Population Per Desert Tract"
+                            title: "Population Density Per Desert Tract"
                         }]
                     });
 
