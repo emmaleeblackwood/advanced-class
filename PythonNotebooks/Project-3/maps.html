@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
-    <title>Visualizing the Potential for Urban Agriculture in the Urban Praire of St. Louis</title>
+    <title>Visualizing the Potential for Urban Agriculture in the Urban Prairie of St. Louis</title>
 
     <!-- Load Esri CSS from CDN -->
     <link rel="stylesheet" href="https://js.arcgis.com/4.9/esri/css/main.css" />
@@ -58,12 +58,26 @@
             outline: 1px solid steelblue;
             margin: 0 auto;
         }
+        
+        #text {
+            width: 80vw;
+            margin: 0 auto;
+            text-align: left;
+        }
+        
+        #explanation {
+            width: 100vw;
+            height: 98vh;
+            padding-top: 2vh;
+            background-color: #02022B;
+            color: #fff;
+        }
     </style>
 </head>
 
 <body>
 
-    <h3>Visualizing the Potential for Urban Agriculture in the Urban Praire of St. Louis</h3>
+    <h2>Visualizing the Potential for Urban Agriculture in the Urban Prairie of St. Louis</h2>
     <p>Vacant Lots and Food Desert Tracts</p>
 
     <div id="viewDiv">
@@ -81,6 +95,20 @@
     <p> Vacant Lots Near Public Schools </p>
 
     <div id="viewDiv3"></div>
+    
+    <div id="explanation">
+    <h3>What is a Food Desert?</h3>
+    <div id="text">
+        <p>The USDA defines food deserts as parts of the country vapid of fresh fruit, vegetables, and other healthful whole foods, usually found in impoverished areas. This is largely due to a lack of grocery stores, farmers’ markets, and healthy food providers.</p>
+    <br>
+        <p>Urban farms provide a community space and allow nearby residents to access fresh produce and learn how to grow gardens.  They help offset air pollution, bolster local bee populations, and prevent toxic runoff from entering our rivers and streams.  </p>
+    <br>
+        <p>Vacant lots are ideal spaces for urban farms.  Many are located in impoverished areas and food deserts. Empty lots near schools could be transformed into urban farms that function as a learning environment and a source of healthy food.</p>
+    <br>
+        <p>Data for low-estimates of vacant lots is from https://chris-prener.github.io/. </p>
+        
+    </div>
+    </div>
 
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <script src="https://js.arcgis.com/4.9/"></script>
